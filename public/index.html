@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Campus SideQuest · The student task board</title>
+  <meta name="description" content="Post a small campus request or help a classmate in exchange for campus points.">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/js/app.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a href="#board" class="brand" aria-label="Campus SideQuest home">
+      <span class="brand-mark" aria-hidden="true">sq.</span>
+      <span>campus<span class="brand-second">sidequest.</span></span>
+    </a>
+    <nav aria-label="Main navigation">
+      <a href="#board" data-nav="board">The board</a>
+      <a href="#posted" data-nav="posted">My requests</a>
+      <a href="#accepted" data-nav="accepted">Helping with</a>
+      <a href="#leaderboard" data-nav="leaderboard">Campus helpers</a>
+      <a href="#wallet" data-nav="wallet" id="wallet-link" hidden>Points</a>
+      <a href="#admin" data-nav="admin" id="admin-link" hidden>Disputes</a>
+    </nav>
+    <div id="identity" class="identity">
+      <button id="login-open" class="button small">Log in / join</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="board-view">
+      <section class="intro" aria-labelledby="intro-heading">
+        <div class="intro-main">
+          <h1 id="intro-heading">Find help on campus.</h1>
+          <p class="intro-copy">Post a request or lend a hand.</p>
+        </div>
+        <button id="post-open" class="button">Post a request <span aria-hidden="true">＋</span></button>
+      </section>
+
+      <section class="board-section" aria-labelledby="board-heading">
+        <div class="section-heading">
+          <div>
+            <p class="sr-only" id="list-kicker">THE STUDENT TASK BOARD</p>
+            <h2 id="board-heading">Campus requests</h2>
+          </div>
+          <p id="result-count" class="muted" aria-live="polite"></p>
+        </div>
+        <form id="filters" class="filters" role="search">
+          <label class="search-field">
+            <span class="sr-only">Search task titles</span>
+            <input name="search" id="search" type="search" placeholder="Search request titles" maxlength="100">
+          </label>
+          <label>
+            <span class="sr-only">Category</span>
+            <select id="category-filter" name="category"><option value="">All categories</option></select>
+          </label>
+          <label>
+            <span class="sr-only">Task state</span>
+            <select id="state-filter" name="state">
+              <option value="OPEN">Open requests</option>
+              <option value="">Every state</option>
+              <option value="CLAIMED">Claimed</option>
+              <option value="SUBMITTED">Submitted</option>
+              <option value="COMPLETED">Completed</option>
+              <option value="CANCELLED">Cancelled</option>
+            </select>
+          </label>
+          <button class="button quiet filter-button" type="submit">Search requests</button>
+        </form>
+        <div id="task-list" class="task-grid" aria-live="polite">
+          <p class="empty">Loading requests…</p>
+        </div>
+        <nav class="pagination" aria-label="Request pages">
+          <button id="previous" class="button quiet small">← Previous</button>
+          <span id="page-label">Page 1</span>
+          <button id="next" class="button quiet small">Next →</button>
+        </nav>
+      </section>
+    </section>
+
+    <section id="profile-view" hidden>
+      <p class="eyebrow">YOUR CAMPUS ACCOUNT</p>
+      <h1 class="page-title">Your profile</h1>
+      <p class="page-subtitle">Hello, <span id="profile-greeting"></span>.</p>
+      <div class="profile-layout">
+        <form id="profile-form" class="paper">
+          <h2>Your name & skills</h2>
+          <label>Display name<input name="displayName" required maxlength="80"></label>
+          <label>Campus email<input name="email" readonly></label>
+          <fieldset>
+            <legend>Things I can help with</legend>
+            <div id="skill-options" class="skill-options"></div>
+          </fieldset>
+          <p class="form-error" role="alert"></p>
+          <button class="button">Save my profile</button>
+        </form>
+        <aside class="points-card">
+          <p class="eyebrow">AVAILABLE POINTS</p>
+          <strong id="profile-points">—</strong>
+          <p>campus points to offer</p>
+          <button class="button quiet" id="profile-post">Post a request</button>
+        </aside>
+      </div>
+    </section>
+    <section id="detail-view" hidden></section>
+    <section id="account-view" hidden></section>
+  </main>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+
+  <dialog id="auth-dialog" aria-labelledby="auth-heading">
+    <button class="close" data-close="auth-dialog" aria-label="Close">×</button>
+    <p class="eyebrow">YOUR CAMPUS ACCOUNT</p>
+    <h2 id="auth-heading">Log in</h2>
+    <p id="auth-copy" class="muted">Log in to post requests or offer your help.</p>
+    <form id="auth-form">
+      <label id="name-field" hidden>Display name<input name="displayName" maxlength="80" autocomplete="name"></label>
+      <label>Campus email<input name="email" type="email" maxlength="254" autocomplete="username" required placeholder="you@campus.edu"></label>
+      <label>Password<input name="password" type="password" minlength="8" maxlength="72" autocomplete="current-password" required></label>
+      <p class="form-error" role="alert"></p>
+      <button class="button" id="auth-submit">Log in</button>
+    </form>
+    <p class="auth-switch"><span id="auth-switch-copy">New here?</span> <button id="auth-switch" class="text-button">Create an account</button></p>
+  </dialog>
+
+  <dialog id="post-dialog" aria-labelledby="post-heading">
+    <button class="close" data-close="post-dialog" aria-label="Close">×</button>
+    <p class="eyebrow">ASK A CLASSMATE</p>
+    <h2 id="post-heading">Post a request</h2>
+    <p class="muted">Describe the small favour you need and offer a few campus points.</p>
+    <p class="available-note">You have <b id="post-points">—</b> available points.</p>
+    <form id="post-form">
+      <label>A short title<input name="title" maxlength="140" required placeholder="Walk through a SQL join with me"></label>
+      <label>A little more detail<textarea name="description" maxlength="5000" rows="4" required placeholder="What do you need, and where could you meet?"></textarea></label>
+      <label>Category<select name="categoryId" id="post-category" required></select></label>
+      <div class="form-row">
+        <label>Points to offer<input name="rewardPoints" type="number" min="1" max="1000000" step="1" value="10" required></label>
+        <label>Accept by (your local time)<input name="deadline" type="datetime-local" required></label>
+      </div>
+      <p class="form-note">Your points are set aside when you post.</p>
+      <p class="form-error" role="alert"></p>
+      <button class="button">Post my request</button>
+    </form>
+  </dialog>
+</body>
+</html>

@@ -1,0 +1,29 @@
+{
+  "name": "campus-sidequest",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A campus task board built with Express and MySQL",
+  "scripts": {
+    "start": "node --env-file=.env src/server.js",
+    "db:setup": "node --env-file=.env scripts/setup.js",
+    "db:seed": "node --env-file=.env scripts/seed.js",
+    "demo:sql": "node --env-file=.env scripts/demo.js",
+    "test": "node --env-file=.env scripts/test.js",
+    "local:init": "node scripts/local-mysql.js init",
+    "local:start": "node scripts/local-mysql.js start",
+    "local:stop": "node scripts/local-mysql.js stop"
+  },
+  "dependencies": {
+    "bcryptjs": "3.0.2",
+    "express": "5.1.0",
+    "express-session": "1.18.2",
+    "mysql2": "3.24.6"
+  },
+  "devDependencies": {
+    "supertest": "7.1.4"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
